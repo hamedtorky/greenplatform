@@ -30,7 +30,7 @@ django-oauth2-provider
 django-nested-admin
 django-tabbed-admin
 django-countries
-
+gunicorn==19.9.0
 # Borker Rabbitmq
 # ------------------------------------------------------------------------------
 pika
