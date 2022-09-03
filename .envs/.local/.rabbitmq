@@ -1,0 +1,5 @@
+# RabbitMQ
+# ------------------------------------------------------------------------------
+RABBITMQ_ERLANG_COOKIE: takeGreenServerCookies
+RABBITMQ_DEFAULT_USER: greenserver_mq_user
+RABBITMQ_DEFAULT_PASS: greenserver_f5@1s!aSd1%2*4gVvq*RC3@#rgE2W&)FP
