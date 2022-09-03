@@ -1,57 +1,55 @@
 version: '3'
-
-volumes:
-  greenserver_local_postgres_data: {}
-  greenserver_local_postgres_data_backups: {}
-  greenserver_local_rabbitmq_data: {}
-
 services:
-  django:
-    build:
+  web:
+    container_name: "django_app"
+    restart: always
+    build: 
       context: .
-      dockerfile: ./compose/local/django/Dockerfile
-    image: greenserver_local_django
-    container_name: greenserver_local_django
-    depends_on:
-      - postgres
+      dockerfile: ./compose/production/DockerFile
     volumes:
-      - .:/app:z
-    env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - .:/code/
+      - web-static:/code/static
+      - media:/code/media
+    environment:
+      DEBUG: 'true'
+
+  nginx:
+    restart: always
+    image: nginx:1.21-alpine
     ports:
-      - "8000:8000"
-    command: /start
-
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: greenserver_production_postgres
-    container_name: greenserver_local_postgres
+      - "80:80"
     volumes:
-      - greenserver_local_postgres_data:/var/lib/postgresql/data:Z
-      - greenserver_local_postgres_data_backups:/backups:z
-    env_file:
-      - ./.envs/.local/.postgres
-
-  # docs:
-  #   image: greenserver_local_docs
-  #   container_name: greenserver_local_docs
-  #   build:
-  #     context: .
-  #     dockerfile: ./compose/local/docs/Dockerfile
-  #   env_file:
-  #     - ./.envs/.local/.django
-  #   volumes:
-  #     - ./docs:/docs:z
-  #     - ./config:/app/config:z
-  #     - ./greenserver:/app/greenserver:z
-  #   ports:
-  #     - "7000:7000"
-  #   command: /start-docs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - web-static:/static
 
   redis:
+    restart: always
     image: redis:6
-    # ports:
-    #   - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  postgres:
+    restart: always
+    image: kartoza/postgis:13-3.1
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - dbbackups:/backups
+    environment:
+      - POSTGRES_DB={POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
+
+
+volumes:
+  web-django:
+  web-static:
+  pgdata:
+  redisdata:
+  dbbackups:
+  media: {}
+  prometheus_data: { }
+
+networks:
+  monitoring:
+    driver: bridge

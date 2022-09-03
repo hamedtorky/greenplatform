@@ -1,7 +1,0 @@
-# PostgreSQL
-# ------------------------------------------------------------------------------
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_DB=greenserver
-POSTGRES_USER=BJoAHoUpsfSvDgkYbfdWbDyuWDNmMprb
-POSTGRES_PASSWORD=vYi9N2Itq8C5NEiX65Vg0tGajLfiMtjQqSR14i6joMRdecJtVGjJYe6aiZXpZrTy

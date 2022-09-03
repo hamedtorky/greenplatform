@@ -1,0 +1,13 @@
+FROM python:3.9
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /code
+COPY requirements.txt /code/
+RUN apt-get update
+RUN apt-get install binutils libproj-dev gdal-bin -y
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+COPY . /code
+
+CMD ["bash", "./scripts/run.bash"]
